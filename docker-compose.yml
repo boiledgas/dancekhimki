@@ -1,0 +1,26 @@
+version: '2'
+services:
+    backup:
+        image: boiledgas/dancekhimki
+        container_name: backup
+    mysql:  
+        image: mysql:5.5
+        container_name: mysql
+        depends_on:
+            - backup
+        volumes_from:
+            - backup
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+    apache:
+        image: bylexus/apache-php53
+        container_name: apache
+        depends_on:
+            - mysql
+            - backup
+        volumes_from:
+            - backup   
+        ports:
+            - "81:80"
+        external_links:
+            - mysql:mysql
